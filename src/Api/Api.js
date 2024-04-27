@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const URL = 'https://newsapi.org/';
+export const URL = 'https://newsapi.org/';
 
 export const fetchNewsApi = () => {
   return axios

@@ -6,15 +6,41 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  ToastAndroid,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {images} from '../common/images';
 import {colors} from '../common/config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {getUserData} from '../redux/actions';
 
 const LoginScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+  const userData = useSelector(state => state.data);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    dispatch(getUserData());
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
+
+  const handleLogin = () => {
+    const userValid = userData.find(
+      usr => usr?.email === email && usr.password === password,
+    );
+    if (userValid) {
+      navigation.navigate('HomeScreen');
+    } else {
+      ToastAndroid.show(
+        'Please enter valid login credential',
+        ToastAndroid.SHORT,
+      );
+    }
+  };
 
   const header = () => {
     return (
@@ -50,7 +76,7 @@ const LoginScreen = ({navigation}) => {
             style={styles.inputStyle}
           />
         </View>
-        <TouchableOpacity style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={handleLogin}>
           <Text
             style={{
               ...styles.titleName,

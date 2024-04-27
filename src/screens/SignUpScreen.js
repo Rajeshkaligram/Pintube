@@ -19,11 +19,14 @@ const SignUpScreen = ({navigation}) => {
   const [personal, setPersonal] = useState(false);
   const [business, setBusiness] = useState(false);
   const [userData, setUserData] = useState({
+    _id: 0,
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     cPassword: '',
+    personal: false,
+    business: false,
   });
 
   const handleSetData = (key, data) => {
@@ -35,9 +38,13 @@ const SignUpScreen = ({navigation}) => {
 
   const handleClick = data => {
     if (data === 'personal') {
+      handleSetData('personal', true);
+      handleSetData('business', false);
       setPersonal(true);
       setBusiness(false);
     } else {
+      handleSetData('business', true);
+      handleSetData('personal', false);
       setPersonal(false);
       setBusiness(true);
     }
@@ -59,8 +66,9 @@ const SignUpScreen = ({navigation}) => {
       if (userData.password !== userData.cPassword) {
         ToastAndroid.show('Password mismatch', ToastAndroid.SHORT);
       } else {
+        handleSetData('_id', +1);
         await dispatch(storeUserData(userData));
-        console.log(userData);
+        // console.log(userData);
         ToastAndroid.show('Account create sucessfylly!', ToastAndroid.LONG);
       }
     } else {

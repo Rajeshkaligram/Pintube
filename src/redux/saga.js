@@ -5,7 +5,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function* storeUserDataSaga(action) {
   try {
     const {payload} = action;
-    yield AsyncStorage.setItem('userData', JSON.stringify(payload));
+
+    const existUserData = yield AsyncStorage.getItem('userData');
+    const exisUser = existUserData ? JSON.parse(existUserData) : [];
+    const updateUserData = Array.isArray(exisUser)
+      ? [...exisUser, payload]
+      : [payload];
+
+    yield AsyncStorage.setItem('userData', JSON.stringify(updateUserData));
   } catch (error) {
     console.error('Error storing user data:', error);
   }
@@ -15,7 +22,7 @@ function* getUserDataSaga() {
   try {
     const userDataString = yield AsyncStorage.getItem('userData');
     const userData = JSON.parse(userDataString);
-    yield put({type: 'SET_USER_DATA', payload: userData});
+    yield put({type: 'SAVE_USER_DATA', payload: userData});
   } catch (error) {
     console.error('Error getting user data:', error);
   }
